@@ -1,0 +1,6 @@
+{
+  "name": "LOUDO MAX REDEEM CODE",
+  "description": "An offline multiplayer Ludo and Snakes & Ladders game with coins, shop, and statistics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

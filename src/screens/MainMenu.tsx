@@ -13,7 +13,20 @@ interface Props {
 }
 
 export default function MainMenu({ onNavigate, onPlay }: Props) {
-  const { coins, diamonds, profile, stats, dailyMissions, lastDailyRewardDate, claimDailyReward, claimMissionReward } = useUserStore();
+  const { coins, diamonds, profile, stats, lastDailyRewardDate, claimDailyReward, claimMissionReward } = useUserStore();
+  
+  // Safe fallback for daily missions (in case of old local storage state)
+  const defaultMissions = {
+    date: new Date().toLocaleDateString(),
+    ludoPlayed: 0,
+    ludoWon: 0,
+    snakesPlayed: 0,
+    claimedLudoPlayed: false,
+    claimedLudoWon: false,
+    claimedSnakesPlayed: false
+  };
+  const dailyMissions = useUserStore(state => state.dailyMissions) || defaultMissions;
+
   const [showProfileAlert, setShowProfileAlert] = useState(false);
   const [dailyRewardClaimed, setDailyRewardClaimed] = useState(false);
   const [featuredGoti, setFeaturedGoti] = useState(GOTI_SKINS[1]);

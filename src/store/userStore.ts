@@ -165,7 +165,15 @@ export const useUserStore = create<UserState>()(
       
       updateStats: (updates) => set((state) => {
         const today = new Date().toLocaleDateString();
-        let missions = state.dailyMissions;
+        let missions = state.dailyMissions || {
+          date: today,
+          ludoPlayed: 0,
+          ludoWon: 0,
+          snakesPlayed: 0,
+          claimedLudoPlayed: false,
+          claimedLudoWon: false,
+          claimedSnakesPlayed: false,
+        };
         
         // Reset missions if it's a new day
         if (missions.date !== today) {
@@ -229,8 +237,16 @@ export const useUserStore = create<UserState>()(
       
       claimMissionReward: (mission) => {
         const state = get();
-        const missions = state.dailyMissions;
         const today = new Date().toLocaleDateString();
+        const missions = state.dailyMissions || {
+          date: today,
+          ludoPlayed: 0,
+          ludoWon: 0,
+          snakesPlayed: 0,
+          claimedLudoPlayed: false,
+          claimedLudoWon: false,
+          claimedSnakesPlayed: false,
+        };
         
         if (missions.date !== today) return false;
         

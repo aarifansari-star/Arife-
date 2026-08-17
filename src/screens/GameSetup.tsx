@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GameType, Player, PlayerColor } from '../types';
 import { ArrowLeft, Users, Play } from 'lucide-react';
+import { AvatarDisplay } from '../components/AvatarDisplay';
 import { cn, colorMap } from '../lib/utils';
 import { useUserStore } from '../store/userStore';
 import { useLudoStore } from '../store/ludoStore';
@@ -96,7 +97,13 @@ export default function GameSetup({ gameType, onBack, onStart }: Props) {
         <div className="space-y-4 mb-8">
           {Array.from({ length: playerCount }).map((_, i) => (
             <div key={i} className="flex items-center gap-4 bg-slate-800/30 p-4 rounded-2xl border border-slate-700/30">
-              <div className={cn("w-10 h-10 rounded-full border-4 shadow-lg flex-shrink-0", colorMap[assignedColors[i]].bg, colorMap[assignedColors[i]].border)} />
+              <div className="relative">
+                {i === 0 ? (
+                  <AvatarDisplay profile={profile} className={cn("w-12 h-12 border-4 shadow-lg", colorMap[assignedColors[i]].border)} emojiSizeClass="text-2xl" />
+                ) : (
+                  <div className={cn("w-12 h-12 rounded-full border-4 shadow-lg flex-shrink-0", colorMap[assignedColors[i]].bg, colorMap[assignedColors[i]].border)} />
+                )}
+              </div>
               <input
                 type="text"
                 value={playerNames[i]}

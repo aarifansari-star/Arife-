@@ -4,9 +4,10 @@ import { useUserStore } from '../store/userStore';
 import { PATH_COORDS, HOME_COLS, HOME_BOX, HOME_GOTI_OFFSETS } from '../lib/ludoLayout';
 import { PlayerColor, GOTI_SKINS } from '../types';
 import { colorMap, cn } from '../lib/utils';
-import { ArrowLeft, Dices, Trophy, Bot, Gem } from 'lucide-react';
+import { ArrowLeft, Dices, Trophy, Bot, Gem, User } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { GotiPiece } from '../components/GotiPiece';
+import { AvatarDisplay } from '../components/AvatarDisplay';
 
 export default function LudoGame({ onExit }: { onExit: () => void }) {
   const { gameMode, players, gotis, turnIndex, diceValue, diceRolled, rollDice, moveGoti, getValidMoves, resetGame, winners } = useLudoStore();
@@ -56,7 +57,7 @@ export default function LudoGame({ onExit }: { onExit: () => void }) {
       return (
         <div className="w-20 h-20 sm:w-28 sm:h-28 flex flex-col items-center justify-center opacity-50 transition-opacity">
           <div className={cn("px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 flex items-center gap-1")}>
-            {player.isBot && <Bot className="w-3 h-3" />} {player.name}
+            {player.isBot ? <Bot className="w-3 h-3" /> : (player.id === 'p1' ? <AvatarDisplay profile={useUserStore.getState().profile} className="w-4 h-4 border-none" emojiSizeClass="text-[10px]" /> : <User className="w-3 h-3" />)} {player.name}
           </div>
         </div>
       );
@@ -70,7 +71,7 @@ export default function LudoGame({ onExit }: { onExit: () => void }) {
         "w-20 h-20 sm:w-28 sm:h-28 z-20"
       )}>
          <h2 className="text-white font-black text-[10px] sm:text-xs mb-1 uppercase tracking-wider drop-shadow-md truncate w-full text-center flex items-center justify-center gap-1">
-           {player.isBot && <Bot className="w-3 h-3" />} {player.name}
+           {player.isBot ? <Bot className="w-3 h-3" /> : (player.id === 'p1' ? <AvatarDisplay profile={useUserStore.getState().profile} className="w-4 h-4 border-none" emojiSizeClass="text-[10px]" /> : <User className="w-3 h-3" />)} {player.name}
          </h2>
          <button
            onClick={rollDice}

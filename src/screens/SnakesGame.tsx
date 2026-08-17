@@ -3,8 +3,9 @@ import { useSnakesStore, SNAKES, LADDERS } from '../store/snakesStore';
 import { useUserStore } from '../store/userStore';
 import { GOTI_SKINS } from '../types';
 import { colorMap, cn } from '../lib/utils';
-import { ArrowLeft, Dices, Trophy, Gem } from 'lucide-react';
+import { ArrowLeft, Dices, Trophy, Gem, User, Bot } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { AvatarDisplay } from '../components/AvatarDisplay';
 import { GotiPiece } from '../components/GotiPiece';
 
 export default function SnakesGame({ onExit }: { onExit: () => void }) {
@@ -62,10 +63,10 @@ export default function SnakesGame({ onExit }: { onExit: () => void }) {
         isActive ? colorMap[color as keyof typeof colorMap].border : "border-slate-700",
       )}>
          <h2 className={cn(
-           "text-[10px] sm:text-xs mb-1 uppercase tracking-wider drop-shadow-md truncate w-full text-center font-bold",
+           "text-[10px] sm:text-xs mb-1 uppercase tracking-wider drop-shadow-md truncate w-full text-center font-bold flex items-center justify-center gap-1",
            isActive ? "text-black" : colorMap[color as keyof typeof colorMap].text
          )}>
-           {player.name}
+           {player.isBot ? <Bot className="w-3 h-3" /> : (player.id === 'p1' ? <AvatarDisplay profile={useUserStore.getState().profile} className="w-4 h-4 border-none" emojiSizeClass="text-[10px]" /> : <User className="w-3 h-3" />)} {player.name}
          </h2>
          <button
            onClick={rollDice}

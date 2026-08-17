@@ -6,6 +6,7 @@ import { cn } from '../lib/utils';
 import { audio } from '../lib/audio';
 import { GOTI_SKINS } from '../types';
 import { GotiPiece } from '../components/GotiPiece';
+import { AvatarDisplay } from '../components/AvatarDisplay';
 
 interface Props {
   onNavigate: (screen: AppScreen) => void;
@@ -81,8 +82,8 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50 animate-in fade-in">
           <div className="bg-slate-800 border border-slate-700 rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl animate-in zoom-in-95 relative">
             <div className="absolute -top-12 left-1/2 -translate-x-1/2">
-              <div className="w-24 h-24 bg-slate-900 rounded-full flex items-center justify-center border-4 border-slate-800 shadow-[0_0_20px_rgba(99,102,241,0.5)]">
-                <User className="w-12 h-12 text-indigo-400 drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]" />
+              <div className="w-24 h-24 bg-slate-900 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.5)]">
+                <AvatarDisplay profile={profile} className="w-24 h-24 border-4 border-slate-800" emojiSizeClass="text-5xl" />
               </div>
             </div>
             <div className="mt-8">
@@ -121,9 +122,7 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
             className="flex items-center gap-3 cursor-pointer group"
           >
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 p-0.5 shadow-lg group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-slate-900 rounded-full flex items-center justify-center">
-                <User className={cn("w-6 h-6", profile ? "text-indigo-400" : "text-slate-400")} />
-              </div>
+              <AvatarDisplay profile={profile} className="w-full h-full bg-slate-900" emojiSizeClass="text-2xl" />
             </div>
             <div>
               <div className="text-white font-black text-lg">{profile ? profile.name : 'Guest'}</div>

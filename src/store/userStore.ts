@@ -11,6 +11,7 @@ interface UserState {
   isGuest: boolean;
   unlockedGotis: string[];
   equippedGotiId: string;
+  unlockedAvatars: string[];
   redemptions: RedemptionRecord[];
   lastDailyRewardDate: string | null;
   dailyMissions: DailyMissions;
@@ -23,6 +24,7 @@ interface UserState {
   addDiamonds: (amount: number) => void;
   buyGoti: (id: string, price: number) => boolean;
   equipGoti: (id: string) => void;
+  buyAvatar: (id: string, price: number) => boolean;
   updateStats: (updates: Partial<UserStats>) => void;
   updateProfile: (profile: UserProfile) => void;
   setGuestMode: (isGuest: boolean) => void;
@@ -71,6 +73,7 @@ export const useUserStore = create<UserState>()(
       },
       unlockedGotis: ['classic'],
       equippedGotiId: 'classic',
+      unlockedAvatars: [],
       settings: {
         sound: true,
         music: true,
@@ -162,6 +165,18 @@ export const useUserStore = create<UserState>()(
       },
       
       equipGoti: (id) => set({ equippedGotiId: id }),
+
+      buyAvatar: (id, price) => {
+        const state = get();
+        if (state.diamonds >= price && !state.unlockedAvatars?.includes(id)) {
+          set((state) => ({
+            diamonds: state.diamonds - price,
+            unlockedAvatars: [...(state.unlockedAvatars || []), id]
+          }));
+          return true;
+        }
+        return false;
+      },
       
       updateStats: (updates) => set((state) => {
         const today = new Date().toLocaleDateString();

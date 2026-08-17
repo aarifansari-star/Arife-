@@ -3,6 +3,7 @@ import { useUserStore } from '../store/userStore';
 import { User, Cake, Globe } from 'lucide-react';
 import { audio } from '../lib/audio';
 import { cn } from '../lib/utils';
+import { AvatarPicker } from '../components/AvatarPicker';
 
 const COUNTRIES = [
   "India 🇮🇳",
@@ -35,6 +36,10 @@ export default function StartupProfileScreen({ onComplete }: { onComplete: () =>
   const [name, setName] = useState('');
   const [age, setAge] = useState<string>('');
   const [country, setCountry] = useState('');
+  
+  const [avatarType, setAvatarType] = useState<'gallery'|'builtin'|'default'>('default');
+  const [avatarId, setAvatarId] = useState<string | undefined>();
+  const [avatarImage, setAvatarImage] = useState<string | undefined>();
 
   const handleSave = () => {
     if (!name.trim()) return;
@@ -46,7 +51,10 @@ export default function StartupProfileScreen({ onComplete }: { onComplete: () =>
     updateProfile({
       name: name.trim(),
       age: parsedAge,
-      country
+      country,
+      avatarType,
+      avatarId,
+      avatarImage
     });
     onComplete();
   };
@@ -55,6 +63,12 @@ export default function StartupProfileScreen({ onComplete }: { onComplete: () =>
     audio.playClick();
     setGuestMode(true);
     onComplete();
+  };
+
+  const handleAvatarChange = (type: 'gallery' | 'builtin' | 'default', id?: string, image?: string) => {
+    setAvatarType(type);
+    if (id !== undefined) setAvatarId(id);
+    if (image !== undefined) setAvatarImage(image);
   };
 
   return (
@@ -67,6 +81,13 @@ export default function StartupProfileScreen({ onComplete }: { onComplete: () =>
 
       <div className="bg-slate-800/60 border border-slate-700 rounded-3xl p-6 shadow-xl w-full">
         <div className="flex flex-col gap-5">
+          <AvatarPicker 
+            avatarType={avatarType} 
+            avatarId={avatarId} 
+            avatarImage={avatarImage} 
+            onChange={handleAvatarChange} 
+          />
+
           <div>
             <label className="text-slate-400 font-bold text-sm mb-1.5 flex items-center gap-2 uppercase tracking-wide">
               <User className="w-4 h-4" /> Name

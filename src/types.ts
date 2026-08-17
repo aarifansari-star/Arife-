@@ -16,6 +16,9 @@ export interface UserProfile {
   name: string;
   age: number | null;
   country: string;
+  avatarType?: 'gallery' | 'builtin' | 'premium' | 'default';
+  avatarId?: string;
+  avatarImage?: string;
 }
 
 export interface RedemptionRecord {

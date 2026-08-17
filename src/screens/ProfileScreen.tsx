@@ -3,6 +3,9 @@ import { useUserStore } from '../store/userStore';
 import { ArrowLeft, User, Cake, Globe, CheckCircle2 } from 'lucide-react';
 import { audio } from '../lib/audio';
 import { cn } from '../lib/utils';
+import { AvatarPicker } from '../components/AvatarPicker';
+import { AvatarDisplay } from '../components/AvatarDisplay';
+import { AvatarShop } from '../components/AvatarShop';
 
 const COUNTRIES = [
   "India 🇮🇳",
@@ -33,9 +36,14 @@ const COUNTRIES = [
 export default function ProfileScreen({ onBack }: { onBack: () => void }) {
   const { profile, updateProfile } = useUserStore();
   const [isEditing, setIsEditing] = useState(!profile);
+  
   const [name, setName] = useState(profile?.name || '');
   const [age, setAge] = useState<string>(profile?.age ? profile.age.toString() : '');
   const [country, setCountry] = useState(profile?.country || '');
+  const [avatarType, setAvatarType] = useState<'gallery'|'builtin'|'premium'|'default'>(profile?.avatarType || 'default');
+  const [avatarId, setAvatarId] = useState<string | undefined>(profile?.avatarId);
+  const [avatarImage, setAvatarImage] = useState<string | undefined>(profile?.avatarImage);
+
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSave = () => {
@@ -48,12 +56,21 @@ export default function ProfileScreen({ onBack }: { onBack: () => void }) {
     updateProfile({
       name: name.trim(),
       age: parsedAge,
-      country
+      country,
+      avatarType,
+      avatarId,
+      avatarImage
     });
     
     setIsEditing(false);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
+  };
+
+  const handleAvatarChange = (type: 'gallery' | 'builtin' | 'premium' | 'default', id?: string, image?: string) => {
+    setAvatarType(type);
+    if (id !== undefined) setAvatarId(id);
+    if (image !== undefined) setAvatarImage(image);
   };
 
   return (
@@ -76,6 +93,13 @@ export default function ProfileScreen({ onBack }: { onBack: () => void }) {
       <div className="bg-slate-800/60 border border-slate-700 rounded-3xl p-6 shadow-xl w-full">
         {isEditing ? (
           <div className="flex flex-col gap-5">
+            <AvatarPicker 
+              avatarType={avatarType} 
+              avatarId={avatarId} 
+              avatarImage={avatarImage} 
+              onChange={handleAvatarChange} 
+            />
+
             <div>
               <label className="text-slate-400 font-bold text-sm mb-1.5 flex items-center gap-2 uppercase tracking-wide">
                 <User className="w-4 h-4" /> Player Name
@@ -150,8 +174,8 @@ export default function ProfileScreen({ onBack }: { onBack: () => void }) {
           </div>
         ) : (
           <div className="flex flex-col items-center text-center">
-            <div className="w-24 h-24 bg-indigo-500/20 border-2 border-indigo-500 rounded-full flex items-center justify-center mb-6">
-              <User className="w-12 h-12 text-indigo-400" />
+            <div className="mb-6">
+              <AvatarDisplay profile={profile} className="w-24 h-24" emojiSizeClass="text-5xl" />
             </div>
             
             <h2 className="text-3xl font-black text-white mb-6">{profile?.name}</h2>
@@ -171,10 +195,21 @@ export default function ProfileScreen({ onBack }: { onBack: () => void }) {
 
             <button
               onClick={() => setIsEditing(true)}
-              className="w-full bg-slate-700 text-white font-black py-4 rounded-xl hover:bg-slate-600 transition-colors uppercase tracking-wide"
+              className="w-full bg-slate-700 text-white font-black py-4 rounded-xl hover:bg-slate-600 transition-colors uppercase tracking-wide mb-4"
             >
               Edit Profile
             </button>
+            
+            <div className="w-full">
+              <AvatarShop 
+                onEquip={(id) => {
+                  updateProfile({ ...profile, avatarType: 'premium', avatarId: id, avatarImage: undefined } as any);
+                  setShowSuccess(true);
+                  setTimeout(() => setShowSuccess(false), 3000);
+                }}
+                currentAvatarId={profile?.avatarType === 'premium' ? profile.avatarId : undefined}
+              />
+            </div>
           </div>
         )}
       </div>

@@ -25,7 +25,7 @@ interface UserState {
   updateProfile: (profile: UserProfile) => void;
   setGuestMode: (isGuest: boolean) => void;
   toggleSetting: (key: keyof UserState['settings']) => void;
-  redeemDiamonds: (cost: number, rewardLabel: string) => RedemptionRecord | null;
+  redeemDiamonds: (cost: number, rewardLabel: string, currencyDetails?: { country: string, currencyCode: string, currencySymbol: string }) => RedemptionRecord | null;
   useRedeemCode: (code: string) => { success: boolean; message: string; coins?: number };
 }
 
@@ -74,7 +74,7 @@ export const useUserStore = create<UserState>()(
         diamonds: state.diamonds + amount
       })),
       
-      redeemDiamonds: (cost, rewardLabel) => {
+      redeemDiamonds: (cost, rewardLabel, currencyDetails) => {
         const state = get();
         if (state.diamonds >= cost) {
           const generatePart = () => Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -85,7 +85,8 @@ export const useUserStore = create<UserState>()(
             diamondsSpent: cost,
             reward: rewardLabel,
             code,
-            status: 'REDEEMED'
+            status: 'REDEEMED',
+            ...(currencyDetails ? currencyDetails : {})
           };
           
           set((state) => ({

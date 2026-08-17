@@ -25,6 +25,9 @@ export interface RedemptionRecord {
   reward: string;
   code: string;
   status: string;
+  country?: string;
+  currencyCode?: string;
+  currencySymbol?: string;
 }
 
 export interface GotiSkin {

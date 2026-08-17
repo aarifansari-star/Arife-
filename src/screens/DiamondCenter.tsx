@@ -1,25 +1,33 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useUserStore } from '../store/userStore';
 import { ArrowLeft, Gem, Copy, CheckCircle2 } from 'lucide-react';
 import { audio } from '../lib/audio';
 import { cn } from '../lib/utils';
+import { getCurrencyForCountry, formatRewardAmount } from '../lib/currency';
 
 const REDEEM_OPTIONS = [
-  { cost: 1400, reward: '₹10', tier: 'low' },
-  { cost: 2800, reward: '₹20', tier: 'low' },
-  { cost: 7000, reward: '₹50', tier: 'medium' },
-  { cost: 14000, reward: '₹100', tier: 'medium' },
-  { cost: 28000, reward: '₹200', tier: 'medium' },
-  { cost: 70000, reward: '₹500', tier: 'high' },
+  { cost: 1400, inr: 10, tier: 'low' },
+  { cost: 2800, inr: 20, tier: 'low' },
+  { cost: 7000, inr: 50, tier: 'medium' },
+  { cost: 14000, inr: 100, tier: 'medium' },
+  { cost: 28000, inr: 200, tier: 'medium' },
+  { cost: 70000, inr: 500, tier: 'high' },
 ];
 
 export default function DiamondCenter({ onBack }: { onBack: () => void }) {
-  const { diamonds, redemptions, redeemDiamonds } = useUserStore();
+  const { diamonds, redemptions, redeemDiamonds, profile } = useUserStore();
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
+  
+  const currentCurrency = useMemo(() => getCurrencyForCountry(profile?.country), [profile?.country]);
 
   const handleRedeem = (cost: number, rewardLabel: string) => {
     if (diamonds >= cost) {
-      const record = redeemDiamonds(cost, rewardLabel);
+      const currencyDetails = profile?.country ? {
+        country: profile.country,
+        currencyCode: currentCurrency.code,
+        currencySymbol: currentCurrency.symbol
+      } : undefined;
+      const record = redeemDiamonds(cost, rewardLabel, currencyDetails);
       if (record) {
         audio.playWin();
       }
@@ -78,7 +86,9 @@ export default function DiamondCenter({ onBack }: { onBack: () => void }) {
       <h2 className="text-xl font-black text-white mb-6 uppercase tracking-wider text-center shrink-0">Redeem Rewards</h2>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mb-12 shrink-0">
-        {REDEEM_OPTIONS.map((option, idx) => (
+        {REDEEM_OPTIONS.map((option, idx) => {
+          const rewardLabel = formatRewardAmount(option.inr, currentCurrency);
+          return (
           <div key={idx} className={cn("rounded-3xl p-5 border flex flex-col relative overflow-hidden transition-all hover:scale-[1.02]", getTierStyles(option.tier))}>
             <div className="flex items-center gap-2 mb-4">
               <Gem className="w-5 h-5 text-cyan-400 drop-shadow-md" />
@@ -86,12 +96,11 @@ export default function DiamondCenter({ onBack }: { onBack: () => void }) {
             </div>
             
             <div className={cn("text-3xl sm:text-4xl font-black mb-6 drop-shadow-sm", getTierTextStyles(option.tier))}>
-              {option.reward}
+              {rewardLabel}
             </div>
-
             <div className="mt-auto">
               <button
-                onClick={() => handleRedeem(option.cost, option.reward)}
+                onClick={() => handleRedeem(option.cost, rewardLabel)}
                 disabled={diamonds < option.cost}
                 className={cn(
                   "w-full font-black py-3 rounded-xl transition-all text-sm sm:text-base",
@@ -106,7 +115,7 @@ export default function DiamondCenter({ onBack }: { onBack: () => void }) {
               </button>
             </div>
           </div>
-        ))}
+        )})}
       </div>
 
       <h2 className="text-xl font-black text-white mb-6 uppercase tracking-wider text-center shrink-0">Redemption History</h2>

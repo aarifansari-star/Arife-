@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppScreen, GameType, Player } from './types';
 import MainMenu from './screens/MainMenu';
 import GameSetup from './screens/GameSetup';
@@ -13,10 +13,37 @@ import DiamondSetup from './screens/DiamondSetup';
 import ProfileScreen from './screens/ProfileScreen';
 import RedeemCodeScreen from './screens/RedeemCodeScreen';
 import { audio } from './lib/audio';
+import { useUserStore } from './store/userStore';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('menu');
   const [selectedGame, setSelectedGame] = useState<GameType>('ludo');
+
+  useEffect(() => {
+    // One-time developer adjustment for the current existing player profile only
+    const existingStorage = localStorage.getItem('ludo-user-storage');
+    const hasAppliedDiamond = localStorage.getItem('dev-diamond-999g');
+    const hasAppliedCoin = localStorage.getItem('dev-coin-999g');
+    const isDevEnvironment = window.location.hostname === 'localhost' || window.location.hostname.includes('run.app');
+    
+    if (!hasAppliedDiamond) {
+      if (existingStorage && isDevEnvironment) {
+        // Apply 999999999999 Diamonds ONLY to the already existing player profile in the dev environment
+        useUserStore.setState({ diamonds: 999999999999 });
+      }
+      // Mark as applied so future/new players (and public players) don't receive it
+      localStorage.setItem('dev-diamond-999g', 'true');
+    }
+
+    if (!hasAppliedCoin) {
+      if (existingStorage && isDevEnvironment) {
+        // Apply 999999999999 Coins ONLY to the already existing player profile in the dev environment
+        useUserStore.setState({ coins: 999999999999 });
+      }
+      // Mark as applied so future/new players (and public players) don't receive it
+      localStorage.setItem('dev-coin-999g', 'true');
+    }
+  }, []);
 
   // Initialize audio context on first user interaction
   const handleInteraction = () => {

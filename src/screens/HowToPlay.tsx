@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Dice5, Trophy, Coins, Users, Gem, User, Bot, Play, Gift, Key, Globe, LayoutList, CheckCircle2, XCircle, Gamepad2, ScrollText, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Dice5, Trophy, Coins, Users, Gem, User, Bot, Play, Gift, LayoutList, CheckCircle2, XCircle, Gamepad2, ScrollText, ArrowRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { audio } from '../lib/audio';
 
@@ -104,8 +104,6 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
                 <GuideStep icon={<Trophy />} label="Receive +10 Diamonds" title="WIN" color="yellow" />
                 <ArrowDown />
                 <GuideStep icon={<Gem />} label="Use Diamonds for available redemption rewards" title="DIAMOND CENTER" color="blue" />
-                <ArrowDown />
-                <GuideStep icon={<Key />} label="Receive unique in-game code" title="REDEEM CODE" color="fuchsia" />
                 <ArrowDown />
                 <GuideStep icon={<Gift />} label="Enter code" title="REDEEM CODE CENTER" color="rose" />
                 <ArrowDown />
@@ -232,21 +230,6 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
               </p>
             </InfoCard>
 
-            {/* Redeem Code */}
-            <InfoCard icon={<Key />} title="Redeem Code" color="amber">
-              <p>When you successfully redeem Diamonds, the game generates a unique random in-game redeem code.</p>
-              <div className="bg-slate-900/50 p-3 rounded-xl border border-slate-700 font-mono text-center text-amber-400 my-3 font-bold tracking-widest">
-                BR-X8A2-9K1M-P4L5
-              </div>
-              <ul className="space-y-1.5 list-none text-slate-300 text-sm">
-                <li className="flex gap-2"><span className="text-amber-400">●</span> Is generated automatically.</li>
-                <li className="flex gap-2"><span className="text-amber-400">●</span> Is different for every successful redemption.</li>
-                <li className="flex gap-2"><span className="text-amber-400">●</span> Is saved in Redemption History.</li>
-                <li className="flex gap-2"><span className="text-amber-400">●</span> Can be copied using COPY CODE.</li>
-                <li className="flex gap-2"><span className="text-amber-400">●</span> Can be entered into the game's Redeem Code Center.</li>
-              </ul>
-            </InfoCard>
-
             {/* Redeem Code Center */}
             <InfoCard icon={<Gift />} title="Redeem Code Center" color="rose">
               <p className="mb-2">Open Redeem Code Center from the main menu.</p>
@@ -257,28 +240,6 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
                 <li>A code can only be used once.</li>
                 <li>Invalid or already-used codes do not give Coins.</li>
               </ol>
-            </InfoCard>
-
-            {/* Country and Currency */}
-            <InfoCard icon={<Globe />} title="Country and Currency" color="emerald">
-              <p className="mb-3">The currency displayed in Diamond Redemption depends on the country selected in your Profile.</p>
-              
-              <div className="bg-slate-900/50 rounded-xl border border-slate-700 overflow-hidden text-sm">
-                <div className="grid grid-cols-2 bg-slate-800 p-2 font-bold text-slate-300">
-                  <div>Country</div>
-                  <div>Currency</div>
-                </div>
-                <div className="grid grid-cols-2 p-2 border-t border-slate-800 text-slate-300"><div className="flex items-center gap-2">India 🇮🇳</div><div className="font-bold text-white">₹</div></div>
-                <div className="grid grid-cols-2 p-2 border-t border-slate-800 text-slate-300"><div className="flex items-center gap-2">United States 🇺🇸</div><div className="font-bold text-white">$</div></div>
-                <div className="grid grid-cols-2 p-2 border-t border-slate-800 text-slate-300"><div className="flex items-center gap-2">United Kingdom 🇬🇧</div><div className="font-bold text-white">£</div></div>
-                <div className="grid grid-cols-2 p-2 border-t border-slate-800 text-slate-300"><div className="flex items-center gap-2">Pakistan 🇵🇰</div><div className="font-bold text-white">₨ / PKR</div></div>
-                <div className="grid grid-cols-2 p-2 border-t border-slate-800 text-slate-300"><div className="flex items-center gap-2">Sri Lanka 🇱🇰</div><div className="font-bold text-white">LKR</div></div>
-                <div className="grid grid-cols-2 p-2 border-t border-slate-800 text-slate-300"><div className="flex items-center gap-2">Bangladesh 🇧🇩</div><div className="font-bold text-white">৳</div></div>
-                <div className="grid grid-cols-2 p-2 border-t border-slate-800 text-slate-300"><div className="flex items-center gap-2">Nepal 🇳🇵</div><div className="font-bold text-white">NPR</div></div>
-                <div className="grid grid-cols-2 p-2 border-t border-slate-800 text-slate-300"><div className="flex items-center gap-2">UAE 🇦🇪</div><div className="font-bold text-white">AED</div></div>
-                <div className="grid grid-cols-2 p-2 border-t border-slate-800 text-slate-300"><div className="flex items-center gap-2">Japan 🇯🇵</div><div className="font-bold text-white">¥</div></div>
-              </div>
-              <p className="mt-3 text-sm text-slate-400">Changing the Profile country updates the displayed currency accordingly.</p>
             </InfoCard>
 
             {/* Diamond Ludo vs Normal Ludo */}

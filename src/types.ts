@@ -10,7 +10,7 @@ export interface Player {
 
 export type GameType = 'ludo' | 'snakes' | 'diamondLudo';
 
-export type AppScreen = 'menu' | 'setup' | 'diamondSetup' | 'ludo' | 'snakes' | 'shop' | 'settings' | 'stats' | 'howToPlay' | 'diamondCenter' | 'profile' | 'redeemCode';
+export type AppScreen = 'startupProfile' | 'menu' | 'setup' | 'diamondSetup' | 'ludo' | 'snakes' | 'shop' | 'settings' | 'stats' | 'howToPlay' | 'diamondCenter' | 'profile' | 'redeemCode';
 
 export interface UserProfile {
   name: string;

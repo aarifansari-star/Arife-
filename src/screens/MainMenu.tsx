@@ -47,9 +47,9 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
               </button>
               <button 
                 onClick={() => { audio.playClick(); setShowProfileAlert(false); }}
-                className="w-full bg-slate-700 text-white font-bold py-3 rounded-xl hover:bg-slate-600 transition-colors"
+                className="w-full bg-slate-700 text-white font-bold py-3 rounded-xl hover:bg-slate-600 transition-colors uppercase tracking-wide"
               >
-                Cancel
+                Back
               </button>
             </div>
           </div>
@@ -57,10 +57,15 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
       )}
 
       <div className="absolute top-6 left-6">
-        {profile && (
+        {profile ? (
           <div className="flex items-center gap-2 bg-slate-800/80 px-4 py-2 rounded-full border border-slate-600/50 shadow-md cursor-pointer hover:bg-slate-700 transition-colors" onClick={() => onNavigate('profile')}>
             <User className="w-5 h-5 text-slate-300" />
             <span className="font-bold text-slate-200">{profile.name}</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 bg-slate-800/80 px-4 py-2 rounded-full border border-slate-600/50 shadow-md cursor-pointer hover:bg-slate-700 transition-colors" onClick={() => onNavigate('profile')}>
+            <User className="w-5 h-5 text-slate-400" />
+            <span className="font-bold text-slate-400">Guest</span>
           </div>
         )}
       </div>

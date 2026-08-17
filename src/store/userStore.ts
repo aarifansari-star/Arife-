@@ -8,6 +8,7 @@ interface UserState {
   diamonds: number;
   stats: UserStats;
   profile: UserProfile | null;
+  isGuest: boolean;
   unlockedGotis: string[];
   equippedGotiId: string;
   redemptions: RedemptionRecord[];
@@ -22,6 +23,7 @@ interface UserState {
   equipGoti: (id: string) => void;
   updateStats: (updates: Partial<UserStats>) => void;
   updateProfile: (profile: UserProfile) => void;
+  setGuestMode: (isGuest: boolean) => void;
   toggleSetting: (key: keyof UserState['settings']) => void;
   redeemDiamonds: (cost: number, rewardLabel: string) => RedemptionRecord | null;
   useRedeemCode: (code: string) => { success: boolean; message: string; coins?: number };
@@ -42,6 +44,7 @@ export const useUserStore = create<UserState>()(
       coins: 500, // Starting coins
       diamonds: 0,
       profile: null,
+      isGuest: false,
       redemptions: [],
       stats: {
         gamesPlayed: 0,
@@ -148,7 +151,9 @@ export const useUserStore = create<UserState>()(
         stats: { ...state.stats, ...updates }
       })),
       
-      updateProfile: (profile) => set({ profile }),
+      updateProfile: (profile) => set({ profile, isGuest: false }),
+      
+      setGuestMode: (isGuest) => set({ isGuest }),
       
       toggleSetting: (key) => set((state) => {
         const newSettings = { ...state.settings, [key]: !state.settings[key] };

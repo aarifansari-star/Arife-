@@ -12,11 +12,13 @@ import DiamondCenter from './screens/DiamondCenter';
 import DiamondSetup from './screens/DiamondSetup';
 import ProfileScreen from './screens/ProfileScreen';
 import RedeemCodeScreen from './screens/RedeemCodeScreen';
+import StartupProfileScreen from './screens/StartupProfileScreen';
 import { audio } from './lib/audio';
 import { useUserStore } from './store/userStore';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<AppScreen>('menu');
+  const isStartup = !useUserStore.getState().profile && !useUserStore.getState().isGuest;
+  const [currentScreen, setCurrentScreen] = useState<AppScreen>(isStartup ? 'startupProfile' : 'menu');
   const [selectedGame, setSelectedGame] = useState<GameType>('ludo');
 
   useEffect(() => {
@@ -73,6 +75,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-fuchsia-500/30 overflow-hidden">
+      {currentScreen === 'startupProfile' && <StartupProfileScreen onComplete={() => navigate('menu')} />}
       {currentScreen === 'menu' && <MainMenu onNavigate={navigate} onPlay={startGameSetup} />}
       {currentScreen === 'setup' && <GameSetup gameType={selectedGame} onBack={() => navigate('menu')} onStart={() => navigate(selectedGame)} />}
       {currentScreen === 'diamondSetup' && <DiamondSetup onBack={() => navigate('menu')} onStart={() => { setSelectedGame('diamondLudo'); navigate('ludo'); }} />}

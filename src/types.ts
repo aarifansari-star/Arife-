@@ -78,6 +78,16 @@ export const GOTI_SKINS: GotiSkin[] = [
   { id: 'ultimate_god', name: 'Ultimate God', price: 100000000, icon: 'Sun', styleClass: 'border-[6px] border-white shadow-[0_0_100px_#ffffff]' }
 ];
 
+export interface DailyMissions {
+  date: string;
+  ludoPlayed: number;
+  ludoWon: number;
+  snakesPlayed: number;
+  claimedLudoPlayed: boolean;
+  claimedLudoWon: boolean;
+  claimedSnakesPlayed: boolean;
+}
+
 export interface UserStats {
   gamesPlayed: number;
   gamesWon: number;
@@ -85,4 +95,5 @@ export interface UserStats {
   snakesWins: number;
   diamondLudoWins: number;
   totalCoinsEarned: number;
+  winStreak: number;
 }

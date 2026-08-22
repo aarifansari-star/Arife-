@@ -4,7 +4,7 @@ import { useUserStore } from '../store/userStore';
 import { PATH_COORDS, HOME_COLS, HOME_BOX, HOME_GOTI_OFFSETS } from '../lib/ludoLayout';
 import { PlayerColor, GOTI_SKINS } from '../types';
 import { colorMap, cn } from '../lib/utils';
-import { ArrowLeft, Dices, Trophy, Bot, Gem, User } from 'lucide-react';
+import { ArrowLeft, Dices, Trophy, Bot, Gem, User, Coins } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { GotiPiece } from '../components/GotiPiece';
 import { AvatarDisplay } from '../components/AvatarDisplay';
@@ -13,23 +13,29 @@ export default function LudoGame({ onExit }: { onExit: () => void }) {
   const { gameMode, players, gotis, turnIndex, diceValue, diceRolled, rollDice, moveGoti, getValidMoves, resetGame, winners } = useLudoStore();
   const { addCoins, addDiamonds, equippedGotiId } = useUserStore();
   const [showResult, setShowResult] = useState(false);
+  const rewardGiven = React.useRef(false);
 
   const currentPlayer = players[turnIndex];
   const validMoves = getValidMoves();
 
   useEffect(() => {
-    if (winners.length >= players.length - 1 && players.length > 0) {
+    if (winners.length >= players.length - 1 && players.length > 0 && !rewardGiven.current) {
+      rewardGiven.current = true;
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
       setShowResult(true);
       
       const isHumanWinner = winners[0]?.isBot === false || winners[0]?.id === 'p1';
       
       // Award coins
-      const wonCoins = gameMode === 'ludo' ? 10 : 100;
-      if (isHumanWinner) {
-        addCoins(wonCoins);
-        if (gameMode === 'diamondLudo') {
-          addDiamonds(10);
+      if (gameMode === 'diamondLudo') {
+        // EXACTLY 50 COINS FOR WINNING EARNING LUDO MATCH
+        if (isHumanWinner) {
+          addCoins(50);
+        }
+      } else {
+        const wonCoins = gameMode === 'ludo' ? 10 : 100;
+        if (isHumanWinner) {
+          addCoins(wonCoins);
         }
       }
       
@@ -175,7 +181,7 @@ export default function LudoGame({ onExit }: { onExit: () => void }) {
         {gameMode === 'diamondLudo' && (
           <div className="flex flex-col items-center">
             <h1 className="text-xl font-black text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-              <Gem className="w-5 h-5" /> Diamond Ludo
+              <Gem className="w-5 h-5" /> Earning Ludo
             </h1>
             <div className="text-slate-400 text-xs font-bold flex items-center gap-1">
                <Gem className="w-3 h-3 text-cyan-500" /> {useUserStore.getState().diamonds.toLocaleString()} Diamonds
@@ -279,12 +285,25 @@ export default function LudoGame({ onExit }: { onExit: () => void }) {
           <Trophy className="w-24 h-24 text-yellow-400 mb-6" />
           <h2 className="text-4xl font-black text-white mb-2">Game Over!</h2>
           <div className="text-xl text-yellow-400 font-bold mb-8 flex flex-col items-center justify-center gap-2">
-            <span>{winners[0]?.name} wins +{gameMode === 'ludo' ? 10 : 100} Coins!</span>
-            {(winners[0]?.isBot === false || winners[0]?.id === 'p1') && gameMode === 'diamondLudo' && (
-              <span className="flex items-center gap-2 text-cyan-400 bg-cyan-400/20 px-4 py-2 rounded-full border border-cyan-400/30">
-                <Gem className="w-5 h-5" /> +10 Diamonds
-              </span>
-            )}
+            {(() => {
+              const humanWon = winners[0]?.isBot === false || winners[0]?.id === 'p1';
+              if (gameMode === 'diamondLudo') {
+                return (
+                  <>
+                    <span className="text-white">{humanWon ? '🎉 YOU WON!' : '😔 YOU LOST'}</span>
+                    <span className={cn(
+                      "flex items-center gap-2 px-4 py-2 rounded-full border", 
+                      humanWon ? "text-yellow-400 bg-yellow-400/20 border-yellow-400/30" : "text-slate-400 bg-slate-800 border-slate-700"
+                    )}>
+                      <Coins className="w-5 h-5" /> {humanWon ? '+50 COINS' : '+0 COINS'}
+                    </span>
+                  </>
+                );
+              }
+              return (
+                <span>{winners[0]?.name} wins +{gameMode === 'ludo' ? 10 : 100} Coins!</span>
+              );
+            })()}
           </div>
           
           <div className="flex flex-col gap-4 w-full max-w-sm">

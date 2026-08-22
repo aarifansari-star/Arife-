@@ -44,7 +44,7 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
                 : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
             )}
           >
-            <Gem className="w-4 h-4" /> Diamond Ludo
+            <Gem className="w-4 h-4" /> Earning Ludo
           </button>
         </div>
 
@@ -111,26 +111,26 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
               </div>
             </section>
 
-            {/* What is Diamond Ludo? */}
-            <InfoCard icon={<Gem />} title="Diamond Ludo" color="cyan">
-              <p>Diamond Ludo is a special Ludo mode where you play against a computer opponent and can earn Diamonds by winning.</p>
+            {/* What is Earning Ludo? */}
+            <InfoCard icon={<Gem />} title="Earning Ludo" color="cyan">
+              <p>Earning Ludo is a special Ludo mode where you play against a computer opponent and can earn Diamonds by winning.</p>
               <ul className="mt-3 space-y-1.5 list-none">
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-cyan-400 mt-1 shrink-0"/> 1 Human Player vs 1 Computer</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-cyan-400 mt-1 shrink-0"/> Human controls their own gotis</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-cyan-400 mt-1 shrink-0"/> Computer plays automatically</li>
                 <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-cyan-400 mt-1 shrink-0"/> The computer opponent gets a random name</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-cyan-400 mt-1 shrink-0"/> Diamond Ludo is completely separate from Normal Ludo</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-cyan-400 mt-1 shrink-0"/> Earning Ludo is completely separate from Normal Ludo</li>
               </ul>
             </InfoCard>
 
             {/* Profile Required */}
             <InfoCard icon={<User />} title="Profile Required" color="indigo">
-              <p>Diamond Ludo requires a completed profile. If no profile exists, Diamond Ludo will remain locked.</p>
+              <p>Earning Ludo requires a completed profile. If no profile exists, Earning Ludo will remain locked.</p>
               <div className="bg-slate-900/50 p-4 rounded-xl mt-3 flex items-center justify-center gap-2 text-sm font-bold text-slate-300 flex-wrap">
                 <span className="text-white">👤 Create Profile</span> <ArrowRight className="w-4 h-4 text-slate-500" />
                 <span className="text-white">Name + Age + Country</span> <ArrowRight className="w-4 h-4 text-slate-500" />
                 <span className="text-white">Save Profile</span> <ArrowRight className="w-4 h-4 text-slate-500" />
-                <span className="text-indigo-400">Diamond Ludo unlocked</span>
+                <span className="text-indigo-400">Earning Ludo unlocked</span>
               </div>
               <p className="mt-3 text-sm text-slate-400">Normal Ludo can still be played as a Guest without creating a profile.</p>
             </InfoCard>
@@ -139,7 +139,7 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
             <InfoCard icon={<Play />} title="How to Start" color="green">
               <ol className="space-y-2 list-decimal list-inside text-slate-300">
                 <li>Open the main menu.</li>
-                <li>Tap <strong>💎 Diamond Ludo</strong>.</li>
+                <li>Tap <strong>💎 Earning Ludo</strong>.</li>
                 <li>Make sure your profile is completed.</li>
                 <li>Tap <strong>START GAME</strong>.</li>
                 <li>You will be matched automatically with a computer opponent.</li>
@@ -182,7 +182,7 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
             {/* Diamond Reward */}
             <InfoCard icon={<Trophy />} title="Win Reward" color="yellow">
               <div className="bg-slate-900/50 p-4 rounded-xl border border-yellow-500/20 text-center mb-4">
-                <div className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Win Diamond Ludo</div>
+                <div className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Win Earning Ludo</div>
                 <div className="text-2xl font-black text-cyan-400">💎 +10 DIAMONDS</div>
               </div>
               <ul className="space-y-2 list-none text-slate-300">
@@ -242,7 +242,7 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
               </ol>
             </InfoCard>
 
-            {/* Diamond Ludo vs Normal Ludo */}
+            {/* Earning Ludo vs Normal Ludo */}
             <InfoCard icon={<ScrollText />} title="Mode Comparison" color="indigo">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
@@ -257,7 +257,7 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
                 </div>
                 
                 <div className="bg-slate-900/50 p-4 rounded-xl border border-cyan-500/30">
-                  <h4 className="font-black text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-2"><Gem className="w-4 h-4" /> Diamond Ludo</h4>
+                  <h4 className="font-black text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-2"><Gem className="w-4 h-4" /> Earning Ludo</h4>
                   <ul className="space-y-2 text-sm text-slate-300">
                     <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0"/> 1 Human vs Computer</li>
                     <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0"/> Profile required</li>

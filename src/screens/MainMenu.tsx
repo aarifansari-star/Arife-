@@ -7,6 +7,7 @@ import { audio } from '../lib/audio';
 import { GOTI_SKINS } from '../types';
 import { GotiPiece } from '../components/GotiPiece';
 import { AvatarDisplay } from '../components/AvatarDisplay';
+import { getCurrencyForCountry, calculateEstimatedValue } from '../lib/currency';
 
 interface Props {
   onNavigate: (screen: AppScreen) => void;
@@ -14,7 +15,7 @@ interface Props {
 }
 
 export default function MainMenu({ onNavigate, onPlay }: Props) {
-  const { coins, diamonds, profile, stats, lastDailyRewardDate, claimDailyReward, claimMissionReward } = useUserStore();
+  const { coins, diamonds, earnedDiamonds = 0, profile, stats, lastDailyRewardDate, claimDailyReward, claimMissionReward } = useUserStore();
   
   // Safe fallback for daily missions (in case of old local storage state)
   const defaultMissions = {
@@ -89,7 +90,7 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
             <div className="mt-8">
               <h2 className="text-2xl font-black text-white mb-4 uppercase tracking-wide">Profile Required</h2>
               <p className="text-slate-300 mb-8 font-medium">
-                Please create your profile before playing Diamond Ludo.
+                Please create your profile before playing Earning Ludo.
               </p>
               <div className="flex flex-col gap-3">
                 <button 
@@ -140,13 +141,6 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
               <Coins className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
               <span className="font-bold text-yellow-400 text-sm sm:text-base">{coins.toLocaleString()}</span>
             </div>
-            <button 
-              onClick={() => onNavigate('diamondCenter')}
-              className="flex items-center gap-2 bg-slate-800/80 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-cyan-400/30 shadow-[0_0_15px_rgba(34,211,238,0.1)] hover:scale-105 active:scale-95 transition-all"
-            >
-              <Gem className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" />
-              <span className="font-bold text-cyan-400 text-sm sm:text-base">{diamonds.toLocaleString()}</span>
-            </button>
           </div>
         </div>
       </div>
@@ -182,19 +176,30 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
 
             <button 
               onClick={handleDiamondLudo}
-              className="group relative flex flex-col items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 p-5 rounded-[2rem] font-black text-xl sm:text-2xl shadow-[0_8px_25px_rgba(34,211,238,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all overflow-hidden border border-cyan-400/50 border-b-4 border-blue-800"
+              className="group relative flex flex-col items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 p-5 rounded-[2rem] font-black text-xl sm:text-2xl shadow-[0_8px_25px_rgba(16,185,129,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all overflow-hidden border border-emerald-400/50 border-b-4 border-teal-800"
             >
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
-              <div className="absolute -top-12 -left-12 w-24 h-24 bg-cyan-400/30 rounded-full blur-xl animate-pulse" />
+              <div className="absolute -top-12 -left-12 w-24 h-24 bg-emerald-400/30 rounded-full blur-xl animate-pulse" />
               <div className="absolute top-2 right-4 flex items-center gap-1 bg-yellow-500 text-slate-900 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
                 <Sparkles className="w-3 h-3" /> Premium
               </div>
-              <div className="flex items-center gap-3 relative z-10 text-white mt-2">
-                <Gem className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-200 fill-cyan-400/20 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" /> DIAMOND LUDO
+              <div className="flex flex-col items-center gap-1 relative z-10 text-white mt-1 w-full">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-500 rounded-full flex items-center justify-center shadow-lg border-2 border-yellow-300">
+                     <span className="text-xl sm:text-2xl drop-shadow-md">💰</span>
+                  </div>
+                  <span className="text-xl sm:text-2xl drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]">EARNING LUDO</span>
+                </div>
+                <div className="text-xs sm:text-sm font-bold text-emerald-100 mb-2">Play & Earn Coins</div>
+                <div className="w-full bg-slate-900/40 rounded-xl p-2.5 flex flex-col items-center gap-1 border border-emerald-500/30 mb-2">
+                   <div className="text-xs sm:text-sm font-black text-yellow-400 uppercase tracking-widest flex items-center gap-1">
+                     🪙 Match Reward: +50 Coins
+                   </div>
+                </div>
+                <div className="bg-yellow-500 text-slate-900 px-4 py-1.5 rounded-full text-xs sm:text-sm font-black uppercase tracking-wider shadow-md">
+                  Play Earning Ludo
+                </div>
               </div>
-              <span className="text-xs sm:text-sm font-bold text-cyan-100 bg-blue-900/50 px-3 py-1 rounded-full relative z-10 flex items-center gap-1">
-                🏆 Win +10 Diamonds
-              </span>
             </button>
 
             <button 
@@ -261,43 +266,6 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
              </button>
           </div>
 
-          {/* Daily Missions */}
-          <div className="bg-slate-800/80 border border-slate-700 rounded-2xl p-5">
-             <div className="flex items-center gap-2 mb-4">
-               <Trophy className="w-5 h-5 text-yellow-400" />
-               <h3 className="font-black text-white uppercase tracking-wider">Daily Missions</h3>
-             </div>
-             <div className="flex flex-col gap-3">
-               <MissionRow 
-                 title="Play 1 Ludo Match" 
-                 reward="+100 Coins" 
-                 progress={Math.min(dailyMissions.ludoPlayed, 1)} 
-                 target={1} 
-                 claimed={dailyMissions.claimedLudoPlayed} 
-                 onClaim={() => handleClaimMission('ludoPlayed')}
-                 rewardType="coins"
-               />
-               <MissionRow 
-                 title="Win 1 Ludo Match" 
-                 reward="+10 Diamonds" 
-                 progress={Math.min(dailyMissions.ludoWon, 1)} 
-                 target={1} 
-                 claimed={dailyMissions.claimedLudoWon} 
-                 onClaim={() => handleClaimMission('ludoWon')}
-                 rewardType="diamonds"
-               />
-               <MissionRow 
-                 title="Play 1 Snake Match" 
-                 reward="+50 Coins" 
-                 progress={Math.min(dailyMissions.snakesPlayed, 1)} 
-                 target={1} 
-                 claimed={dailyMissions.claimedSnakesPlayed} 
-                 onClaim={() => handleClaimMission('snakesPlayed')}
-                 rewardType="coins"
-               />
-             </div>
-          </div>
-
           {/* Featured Goti */}
           <div className="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 flex flex-col items-center relative overflow-hidden group cursor-pointer" onClick={() => onNavigate('shop')}>
              <div className="absolute top-0 right-0 bg-yellow-500 text-slate-900 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase tracking-wider z-10">
@@ -319,12 +287,13 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
       </div>
       
       {/* Footer Navigation Grid */}
-      <div className="max-w-4xl mx-auto w-full px-4 mt-6 z-10 relative">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+      <div className="max-w-4xl mx-auto w-full px-4 mt-6 z-10 relative mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          <MenuButton icon={<div className="text-2xl">💰</div>} title="UPI Redeem" subtitle="Redeem your eligible Coins" onClick={() => onNavigate('upiRedeem' as any)} color="green" />
           <MenuButton icon={<Gift />} title="Redeem Code" subtitle="Use reward codes" onClick={() => onNavigate('redeemCode')} color="fuchsia" />
           <MenuButton icon={<ShoppingCart />} title="Shop" subtitle="Premium Gotis" onClick={() => onNavigate('shop')} color="blue" />
-          <MenuButton icon={<Settings />} title="Settings" subtitle="Preferences" onClick={() => onNavigate('settings')} color="slate" />
-          <MenuButton icon={<HelpCircle />} title="How to Play" subtitle="Rules & Guide" onClick={() => onNavigate('howToPlay')} color="green" />
+          <MenuButton icon={<User />} title="Profile" subtitle="My Account" onClick={() => onNavigate('profile')} color="indigo" />
+          <MenuButton icon={<BarChart3 />} title="Stats" subtitle="My Progress" onClick={() => onNavigate('stats')} color="purple" />
         </div>
       </div>
 
@@ -332,38 +301,6 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
   );
 }
 
-function MissionRow({ title, reward, progress, target, claimed, onClaim, rewardType }: { title: string, reward: string, progress: number, target: number, claimed: boolean, onClaim: () => void, rewardType: 'coins'|'diamonds' }) {
-  const isComplete = progress >= target;
-  
-  return (
-    <div className="flex items-center justify-between bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">
-      <div>
-        <div className="text-sm font-bold text-white leading-tight">{title}</div>
-        <div className={cn("text-xs font-bold flex items-center gap-1 mt-0.5", rewardType === 'coins' ? "text-yellow-400" : "text-cyan-400")}>
-          {rewardType === 'coins' ? <Coins className="w-3 h-3"/> : <Gem className="w-3 h-3" />} {reward}
-        </div>
-      </div>
-      <div>
-        {claimed ? (
-          <div className="text-[10px] font-black text-emerald-400 flex items-center gap-1 uppercase tracking-wider bg-emerald-500/10 px-2 py-1 rounded">
-            <CheckCircle2 className="w-3 h-3" /> Done
-          </div>
-        ) : isComplete ? (
-          <button 
-            onClick={(e) => { e.stopPropagation(); onClaim(); }}
-            className="text-[10px] font-black text-slate-900 bg-yellow-400 hover:bg-yellow-300 px-3 py-1.5 rounded uppercase tracking-wider shadow-[0_0_10px_rgba(250,204,21,0.4)] active:scale-95 transition-all"
-          >
-            Claim
-          </button>
-        ) : (
-          <div className="text-xs font-bold text-slate-500 bg-slate-800 px-2 py-1 rounded">
-            {progress}/{target}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 function MenuButton({ icon, title, subtitle, onClick, color }: { icon: React.ReactNode, title: string, subtitle: string, onClick: () => void, color: string }) {
   const colorMap: Record<string, string> = {

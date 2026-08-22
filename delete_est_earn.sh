@@ -1,0 +1,1 @@
+sed -i '/<div className="flex flex-col items-end sm:items-center bg-slate-800\/80 px-4 py-2 rounded-2xl border border-yellow-500\/30 shadow-\[0_0_15px_rgba(16,185,129,0.1)\]">/,/<\/div>/d' src/screens/MainMenu.tsx

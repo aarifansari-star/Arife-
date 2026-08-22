@@ -6,6 +6,7 @@ import { audio } from '../lib/audio';
 interface UserState {
   coins: number;
   diamonds: number;
+  earnedDiamonds: number;
   stats: UserStats;
   profile: UserProfile | null;
   isGuest: boolean;
@@ -22,6 +23,7 @@ interface UserState {
   };
   addCoins: (amount: number) => void;
   addDiamonds: (amount: number) => void;
+  addEarnedDiamonds: (amount: number) => void;
   buyGoti: (id: string, price: number) => boolean;
   equipGoti: (id: string) => void;
   buyAvatar: (id: string, price: number) => boolean;
@@ -49,6 +51,7 @@ export const useUserStore = create<UserState>()(
     (set, get) => ({
       coins: 500, // Starting coins
       diamonds: 0,
+      earnedDiamonds: 0,
       profile: null,
       isGuest: false,
       redemptions: [],
@@ -88,6 +91,8 @@ export const useUserStore = create<UserState>()(
         }
       })),
       
+      addEarnedDiamonds: (amount) => set((state) => ({ earnedDiamonds: (state.earnedDiamonds || 0) + amount })),
+
       addDiamonds: (amount) => set((state) => ({
         diamonds: state.diamonds + amount
       })),
@@ -179,30 +184,6 @@ export const useUserStore = create<UserState>()(
       },
       
       updateStats: (updates) => set((state) => {
-        const today = new Date().toLocaleDateString();
-        let missions = state.dailyMissions || {
-          date: today,
-          ludoPlayed: 0,
-          ludoWon: 0,
-          snakesPlayed: 0,
-          claimedLudoPlayed: false,
-          claimedLudoWon: false,
-          claimedSnakesPlayed: false,
-        };
-        
-        // Reset missions if it's a new day
-        if (missions.date !== today) {
-          missions = {
-            date: today,
-            ludoPlayed: 0,
-            ludoWon: 0,
-            snakesPlayed: 0,
-            claimedLudoPlayed: false,
-            claimedLudoWon: false,
-            claimedSnakesPlayed: false,
-          };
-        }
-        
         let newStreak = state.stats.winStreak || 0;
         
         // Check if a game was played
@@ -214,23 +195,10 @@ export const useUserStore = create<UserState>()(
            } else {
              newStreak = 0;
            }
-           
-           if (updates.snakesWins !== undefined && updates.snakesWins >= state.stats.snakesWins) {
-             // It's a snakes game (even if they didn't win, snakesWins is passed, wait - wait. 
-             // If snakesWins is in updates, it's snakes game. 
-             missions.snakesPlayed += 1;
-           } else {
-             // It's a ludo game
-             missions.ludoPlayed += 1;
-             if (isWin) {
-               missions.ludoWon += 1;
-             }
-           }
         }
         
         return {
-          stats: { ...state.stats, ...updates, winStreak: newStreak },
-          dailyMissions: missions
+          stats: { ...state.stats, ...updates, winStreak: newStreak }
         };
       }),
       
@@ -250,47 +218,6 @@ export const useUserStore = create<UserState>()(
         return true;
       },
       
-      claimMissionReward: (mission) => {
-        const state = get();
-        const today = new Date().toLocaleDateString();
-        const missions = state.dailyMissions || {
-          date: today,
-          ludoPlayed: 0,
-          ludoWon: 0,
-          snakesPlayed: 0,
-          claimedLudoPlayed: false,
-          claimedLudoWon: false,
-          claimedSnakesPlayed: false,
-        };
-        
-        if (missions.date !== today) return false;
-        
-        if (mission === 'ludoPlayed' && !missions.claimedLudoPlayed && missions.ludoPlayed >= 1) {
-          set((state) => ({
-            coins: state.coins + 100,
-            dailyMissions: { ...state.dailyMissions, claimedLudoPlayed: true }
-          }));
-          return true;
-        }
-        
-        if (mission === 'ludoWon' && !missions.claimedLudoWon && missions.ludoWon >= 1) {
-          set((state) => ({
-            diamonds: state.diamonds + 10,
-            dailyMissions: { ...state.dailyMissions, claimedLudoWon: true }
-          }));
-          return true;
-        }
-        
-        if (mission === 'snakesPlayed' && !missions.claimedSnakesPlayed && missions.snakesPlayed >= 1) {
-          set((state) => ({
-            coins: state.coins + 50,
-            dailyMissions: { ...state.dailyMissions, claimedSnakesPlayed: true }
-          }));
-          return true;
-        }
-        
-        return false;
-      },
       
       toggleSetting: (key) => set((state) => {
         const newSettings = { ...state.settings, [key]: !state.settings[key] };

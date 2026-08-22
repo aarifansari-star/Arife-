@@ -8,10 +8,10 @@ import Stats from './screens/Stats';
 import LudoGame from './screens/LudoGame';
 import SnakesGame from './screens/SnakesGame';
 import HowToPlay from './screens/HowToPlay';
-import DiamondCenter from './screens/DiamondCenter';
 import DiamondSetup from './screens/DiamondSetup';
 import ProfileScreen from './screens/ProfileScreen';
 import RedeemCodeScreen from './screens/RedeemCodeScreen';
+import UpiRedeemScreen from './screens/UpiRedeemScreen';
 import StartupProfileScreen from './screens/StartupProfileScreen';
 import { audio } from './lib/audio';
 import { useUserStore } from './store/userStore';
@@ -25,7 +25,7 @@ export default function App() {
     // One-time developer adjustment for the current existing player profile only
     const existingStorage = localStorage.getItem('ludo-user-storage');
     const hasAppliedDiamond = localStorage.getItem('dev-diamond-999g');
-    const hasAppliedCoin = localStorage.getItem('dev-coin-999g');
+    const hasAppliedCoinReset = localStorage.getItem('dev-coin-reset-0');
     const isDevEnvironment = window.location.hostname === 'localhost' || window.location.hostname.includes('run.app');
     
     if (!hasAppliedDiamond) {
@@ -37,13 +37,13 @@ export default function App() {
       localStorage.setItem('dev-diamond-999g', 'true');
     }
 
-    if (!hasAppliedCoin) {
+    if (!hasAppliedCoinReset) {
       if (existingStorage && isDevEnvironment) {
-        // Apply 999999999999 Coins ONLY to the already existing player profile in the dev environment
-        useUserStore.setState({ coins: 999999999999 });
+        // Reset Coins to 0 for the existing player
+        useUserStore.setState({ coins: 0 });
       }
       // Mark as applied so future/new players (and public players) don't receive it
-      localStorage.setItem('dev-coin-999g', 'true');
+      localStorage.setItem('dev-coin-reset-0', 'true');
     }
   }, []);
 
@@ -78,8 +78,8 @@ export default function App() {
       {currentScreen === 'startupProfile' && <StartupProfileScreen onComplete={() => navigate('menu')} />}
       {currentScreen === 'menu' && <MainMenu onNavigate={navigate} onPlay={startGameSetup} />}
       {currentScreen === 'setup' && <GameSetup gameType={selectedGame} onBack={() => navigate('menu')} onStart={() => navigate(selectedGame)} />}
-      {currentScreen === 'diamondSetup' && <DiamondSetup onBack={() => navigate('menu')} onStart={() => { setSelectedGame('diamondLudo'); navigate('ludo'); }} />}
-      {currentScreen === 'diamondCenter' && <DiamondCenter onBack={() => navigate('menu')} />}
+      {currentScreen === 'diamondSetup' && <DiamondSetup onBack={() => navigate('menu')} onStart={() => { setSelectedGame('diamondLudo'); navigate('ludo'); }} onNavigate={navigate} />}
+      {currentScreen === 'upiRedeem' && <UpiRedeemScreen onBack={() => navigate('menu')} />}
       {currentScreen === 'shop' && <Shop onBack={() => navigate('menu')} />}
       {currentScreen === 'settings' && <Settings onBack={() => navigate('menu')} />}
       {currentScreen === 'stats' && <Stats onBack={() => navigate('menu')} />}

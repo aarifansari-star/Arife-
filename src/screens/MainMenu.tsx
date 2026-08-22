@@ -1,3 +1,4 @@
+import Logo from '../components/Logo';
 import React, { useState, useEffect } from 'react';
 import { AppScreen, GameType } from '../types';
 import { useUserStore } from '../store/userStore';
@@ -126,7 +127,7 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
               <AvatarDisplay profile={profile} className="w-full h-full bg-slate-900" emojiSizeClass="text-2xl" />
             </div>
             <div>
-              <div className="text-white font-black text-lg">{profile ? profile.name : 'Guest'}</div>
+              <div className="text-white font-black text-lg">{profile?.name}</div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded">LVL {level}</span>
                 <div className="w-20 h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -153,10 +154,11 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
           {/* Welcome & Branding */}
           <div className="text-center md:text-left pt-2 pb-4">
             <h2 className="text-slate-400 text-lg sm:text-xl font-medium mb-1">
-              Welcome{profile ? ' back' : ''}, <span className="text-white font-bold">{profile ? profile.name : 'Guest'}</span>!
+              Welcome{profile ? ' back' : ''}, <span className="text-white font-bold">{profile?.name}</span>!
             </h2>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-cyan-400 filter drop-shadow-[0_0_10px_rgba(192,38,211,0.5)] leading-tight">
-              LOUDO MAX
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-cyan-400 filter drop-shadow-[0_0_10px_rgba(192,38,211,0.5)] leading-tight flex items-center justify-center md:justify-start gap-4">
+              <Logo className="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded-2xl drop-shadow-lg" />
+              LOUDO MAX EARN MONEY
             </h1>
           </div>
 

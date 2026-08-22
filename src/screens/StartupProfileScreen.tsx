@@ -1,3 +1,4 @@
+import Logo from '../components/Logo';
 import React, { useState } from 'react';
 import { useUserStore } from '../store/userStore';
 import { User, Cake, Globe } from 'lucide-react';
@@ -32,7 +33,7 @@ const COUNTRIES = [
 ];
 
 export default function StartupProfileScreen({ onComplete }: { onComplete: () => void }) {
-  const { updateProfile, setGuestMode } = useUserStore();
+  const { updateProfile } = useUserStore();
   const [name, setName] = useState('');
   const [age, setAge] = useState<string>('');
   const [country, setCountry] = useState('');
@@ -59,12 +60,6 @@ export default function StartupProfileScreen({ onComplete }: { onComplete: () =>
     onComplete();
   };
 
-  const handleGuest = () => {
-    audio.playClick();
-    setGuestMode(true);
-    onComplete();
-  };
-
   const handleAvatarChange = (type: 'gallery' | 'builtin' | 'default', id?: string, image?: string) => {
     setAvatarType(type);
     if (id !== undefined) setAvatarId(id);
@@ -75,7 +70,7 @@ export default function StartupProfileScreen({ onComplete }: { onComplete: () =>
     <div className="min-h-screen bg-slate-900 p-6 flex flex-col items-center justify-center max-w-lg mx-auto w-full">
       <div className="w-full flex items-center justify-center mb-8">
         <h1 className="text-center text-2xl font-black text-white flex justify-center items-center gap-2 uppercase">
-          <User className="w-6 h-6" /> CREATE YOUR PROFILE
+          <Logo className="w-8 h-8 object-contain rounded-md drop-shadow-md" /> CREATE YOUR PROFILE
         </h1>
       </div>
 
@@ -101,7 +96,7 @@ export default function StartupProfileScreen({ onComplete }: { onComplete: () =>
               maxLength={20}
             />
           </div>
-
+          
           <div>
             <label className="text-slate-400 font-bold text-sm mb-1.5 flex items-center gap-2 uppercase tracking-wide">
               <Cake className="w-4 h-4" /> Age
@@ -149,13 +144,6 @@ export default function StartupProfileScreen({ onComplete }: { onComplete: () =>
             )}
           >
             SAVE PROFILE
-          </button>
-          
-          <button
-            onClick={handleGuest}
-            className="w-full font-bold py-3 rounded-xl transition-all uppercase tracking-wide text-slate-400 hover:text-white hover:bg-slate-800"
-          >
-            CONTINUE AS GUEST
           </button>
         </div>
       </div>

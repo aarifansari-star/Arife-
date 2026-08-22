@@ -1,0 +1,1 @@
+sed -i 's/<span className="text-white">LOUDO<\/span> <span className="text-yellow-400">MAX<\/span>/<img src="\/icon.png" alt="LOUDO MAX" className="w-8 h-8 rounded-lg object-contain" \/>\n          <span className="text-white">LOUDO MAX<\/span> <span className="text-yellow-400">EARN MONEY<\/span>/g' src/screens/MainMenu.tsx

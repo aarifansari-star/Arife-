@@ -1,6 +1,6 @@
 import React from 'react';
 import { useUserStore } from '../store/userStore';
-import { ArrowLeft, Volume2, VolumeX, Music, Vibrate } from 'lucide-react';
+import { ArrowLeft, Volume2, VolumeX, Music, Vibrate, LogOut } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { audio } from '../lib/audio';
 
@@ -10,6 +10,13 @@ export default function Settings({ onBack }: { onBack: () => void }) {
   const handleToggle = (key: keyof typeof settings) => {
     audio.playClick();
     toggleSetting(key);
+  };
+
+  const handleLogout = () => {
+    audio.playClick();
+    import('firebase/auth').then(({signOut}) => {
+      import('../lib/firebase').then(({auth}) => signOut(auth));
+    });
   };
 
   return (
@@ -41,6 +48,16 @@ export default function Settings({ onBack }: { onBack: () => void }) {
             enabled={settings.vibrate} 
             onToggle={() => handleToggle('vibrate')} 
           />
+
+          <div className="mt-12">
+            <button
+              onClick={handleLogout}
+              className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold py-4 rounded-xl border border-red-500/30 transition-all flex items-center justify-center gap-2 uppercase tracking-wide"
+            >
+              <LogOut className="w-5 h-5" />
+              LOG OUT
+            </button>
+          </div>
         </div>
       </div>
     </div>

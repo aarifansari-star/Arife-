@@ -1,0 +1,1 @@
+sed -i 's/<User className="w-6 h-6" \/> CREATE YOUR PROFILE/<img src="\/icon.png" alt="Icon" className="w-8 h-8 object-contain rounded-md drop-shadow-md" \/> CREATE YOUR PROFILE/g' src/screens/StartupProfileScreen.tsx

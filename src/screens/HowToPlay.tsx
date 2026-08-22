@@ -132,7 +132,6 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
                 <span className="text-white">Save Profile</span> <ArrowRight className="w-4 h-4 text-slate-500" />
                 <span className="text-indigo-400">Earning Ludo unlocked</span>
               </div>
-              <p className="mt-3 text-sm text-slate-400">Normal Ludo can still be played as a Guest without creating a profile.</p>
             </InfoCard>
 
             {/* How to Start */}
@@ -249,7 +248,6 @@ export default function HowToPlay({ onBack }: { onBack: () => void }) {
                   <h4 className="font-black text-white uppercase tracking-wider mb-3">Normal Ludo</h4>
                   <ul className="space-y-2 text-sm text-slate-300">
                     <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0"/> Existing normal multiplayer mode</li>
-                    <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0"/> Can be played without a profile as Guest</li>
                     <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0"/> Normal Ludo gameplay</li>
                     <li className="flex items-start gap-2"><XCircle className="w-4 h-4 text-rose-400 shrink-0"/> Normal Ludo win does NOT directly give Coins</li>
                     <li className="flex items-start gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0"/> Daily Missions may give Coins</li>

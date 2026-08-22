@@ -1,3 +1,4 @@
+import Logo from '../components/Logo';
 import React, { useState } from 'react';
 import { useUserStore } from '../store/userStore';
 import { ArrowLeft, User, Cake, Globe, CheckCircle2 } from 'lucide-react';
@@ -80,7 +81,7 @@ export default function ProfileScreen({ onBack }: { onBack: () => void }) {
           <ArrowLeft className="w-6 h-6" />
         </button>
         <h1 className="flex-1 text-center text-2xl font-black text-white mr-10 flex justify-center items-center gap-2">
-          <User className="w-6 h-6" /> MY PROFILE
+          <Logo className="w-6 h-6 object-contain rounded-md" /> MY PROFILE
         </h1>
       </div>
 

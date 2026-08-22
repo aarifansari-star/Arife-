@@ -290,9 +290,8 @@ export default function MainMenu({ onNavigate, onPlay }: Props) {
       
       {/* Footer Navigation Grid */}
       <div className="max-w-4xl mx-auto w-full px-4 mt-6 z-10 relative mb-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-          <MenuButton icon={<div className="text-2xl">💰</div>} title="UPI Redeem" subtitle="Redeem your eligible Coins" onClick={() => onNavigate('upiRedeem' as any)} color="green" />
-          <MenuButton icon={<Gift />} title="Redeem Code" subtitle="Use reward codes" onClick={() => onNavigate('redeemCode')} color="fuchsia" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          <MenuButton icon={<div className="text-2xl">💰</div>} title="Redeem Code" subtitle="Use reward codes" onClick={() => onNavigate('redeemCode')} color="green" />
           <MenuButton icon={<ShoppingCart />} title="Shop" subtitle="Premium Gotis" onClick={() => onNavigate('shop')} color="blue" />
           <MenuButton icon={<User />} title="Profile" subtitle="My Account" onClick={() => onNavigate('profile')} color="indigo" />
           <MenuButton icon={<BarChart3 />} title="Stats" subtitle="My Progress" onClick={() => onNavigate('stats')} color="purple" />

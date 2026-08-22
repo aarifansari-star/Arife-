@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+const fs = require('fs');
+
+const content = `import React, { useState, useEffect } from 'react';
 import { useUserStore } from '../store/userStore';
 import { ArrowLeft, Coins, CheckCircle2, AlertCircle, Clock, Gift, Copy } from 'lucide-react';
 import { audio } from '../lib/audio';
@@ -58,13 +60,13 @@ export default function RedeemCodeScreen({ onBack }: { onBack: () => void }) {
     
     // Generate code
     const generatePart = () => Math.random().toString(36).substring(2, 6).toUpperCase();
-    const newCode = `BR-${generatePart()}-${generatePart()}-${generatePart()}`;
+    const newCode = \`BR-\${generatePart()}-\${generatePart()}-\${generatePart()}\`;
     
     const newRecord: RedeemHistoryRecord = {
       id: Date.now().toString(),
       date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
       coinsSpent: selectedOption.coins,
-      reward: `₹${selectedOption.inr} Redeem Code`,
+      reward: \`₹\${selectedOption.inr} Redeem Code\`,
       code: newCode
     };
     
@@ -74,7 +76,7 @@ export default function RedeemCodeScreen({ onBack }: { onBack: () => void }) {
     
     setGeneratedCode(newCode);
     setStatus('success');
-    setMessage(`Successfully generated your ₹${selectedOption.inr} Redeem Code!`);
+    setMessage(\`Successfully generated your ₹\${selectedOption.inr} Redeem Code!\`);
     
     // Clear selection after generation
     setSelectedOption(null);
@@ -136,7 +138,7 @@ export default function RedeemCodeScreen({ onBack }: { onBack: () => void }) {
       
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8 shrink-0">
         {REDEEM_OPTIONS.map((option, idx) => {
-          const rewardLabel = `₹${option.inr} Code`;
+          const rewardLabel = \`₹\${option.inr} Code\`;
           const isSelected = selectedOption?.coins === option.coins;
           const canAfford = coins >= option.coins;
           
@@ -226,3 +228,6 @@ export default function RedeemCodeScreen({ onBack }: { onBack: () => void }) {
     </div>
   );
 }
+`;
+
+fs.writeFileSync('src/screens/RedeemCodeScreen.tsx', content);

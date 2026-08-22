@@ -1,6 +1,6 @@
 import Logo from '../components/Logo';
-import React, { useState } from 'react';
-import { signInWithPopup } from 'firebase/auth';
+import React, { useState, useEffect } from 'react';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, browserPopupRedirectResolver } from 'firebase/auth';
 import { auth, googleProvider } from '../lib/firebase';
 import { User, LogIn, AlertCircle } from 'lucide-react';
 import { audio } from '../lib/audio';
@@ -8,17 +8,57 @@ import { audio } from '../lib/audio';
 export default function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (sessionStorage.getItem('logout_success')) {
+      setSuccessMsg('Signed out successfully.');
+      sessionStorage.removeItem('logout_success');
+    }
+    
+    // Handle redirect sign-in result
+    getRedirectResult(auth).then((result) => {
+      if (result) {
+        // App.tsx will handle the state change
+        setLoading(true);
+      }
+    }).catch((err) => {
+      console.error("Redirect sign-in error:", err);
+      setError(err.message || "Failed to sign in with Google.");
+      setLoading(false);
+    });
+  }, []);
 
   const handleLogin = async () => {
     audio.playClick();
     setError(null);
     setLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
+      await signInWithPopup(auth, googleProvider, browserPopupRedirectResolver);
+      // We intentionally do not set loading to false here, as App.tsx will unmount us.
+      // But add a timeout just in case it hangs
+      setTimeout(() => setLoading(false), 8000);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to sign in with Google.");
-      setLoading(false);
+      
+      // If popup is blocked, cross-origin isolated, or unauthorized, fallback to redirect
+      if (
+        err.code === 'auth/popup-blocked' || 
+        err.code === 'auth/cancelled-popup-request' ||
+        err.code === 'auth/cross-origin-isolated' ||
+        err.message?.toLowerCase().includes('cross-origin') ||
+        err.code === 'auth/internal-error'
+      ) {
+        try {
+          await signInWithRedirect(auth, googleProvider, browserPopupRedirectResolver);
+        } catch (redirectErr: any) {
+          setError(redirectErr.message || "Failed to redirect for Google Sign-In.");
+          setLoading(false);
+        }
+      } else {
+        setError(err.message || "Failed to sign in with Google.");
+        setLoading(false);
+      }
     }
   };
 
@@ -33,11 +73,16 @@ export default function LoginScreen() {
           EARN MONEY
         </h2>
       </div>
-
       <div className="bg-slate-800/60 border border-slate-700 rounded-3xl p-8 shadow-xl w-full flex flex-col items-center">
         <p className="text-slate-300 font-medium text-center mb-8">
           Sign in with your Google Account to continue
         </p>
+        
+        {successMsg && (
+          <div className="w-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-4 rounded-xl flex items-center justify-center gap-3 mb-6 font-bold">
+            <span className="text-sm">{successMsg}</span>
+          </div>
+        )}
 
         {error && (
           <div className="w-full bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl flex items-start gap-3 mb-6">
@@ -45,7 +90,7 @@ export default function LoginScreen() {
             <span className="text-sm font-medium">{error}</span>
           </div>
         )}
-
+        
         <button
           onClick={handleLogin}
           disabled={loading}
@@ -65,7 +110,6 @@ export default function LoginScreen() {
             </>
           )}
         </button>
-
         <p className="text-slate-500 text-xs text-center mt-6">
           Your game progress is linked to your Google Account.
         </p>

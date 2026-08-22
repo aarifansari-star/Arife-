@@ -1,7 +1,7 @@
 import Logo from '../components/Logo';
 import React, { useState } from 'react';
 import { useUserStore } from '../store/userStore';
-import { ArrowLeft, User, Cake, Globe, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, User, Cake, Globe, CheckCircle2, LogOut } from 'lucide-react';
 import { audio } from '../lib/audio';
 import { cn } from '../lib/utils';
 import { AvatarPicker } from '../components/AvatarPicker';
@@ -46,6 +46,15 @@ export default function ProfileScreen({ onBack }: { onBack: () => void }) {
   const [avatarImage, setAvatarImage] = useState<string | undefined>(profile?.avatarImage);
 
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  
+  const confirmLogout = () => {
+    audio.playClick();
+    sessionStorage.setItem('logout_success', 'true');
+    import('firebase/auth').then(({signOut}) => {
+      import('../lib/firebase').then(({auth}) => signOut(auth));
+    });
+  };
 
   const handleSave = () => {
     if (!name.trim()) return;
@@ -200,6 +209,13 @@ export default function ProfileScreen({ onBack }: { onBack: () => void }) {
             >
               Edit Profile
             </button>
+            <button
+              onClick={() => { audio.playClick(); setShowLogoutConfirm(true); }}
+              className="w-full bg-red-500/10 text-red-500 border border-red-500/30 font-black py-4 rounded-xl hover:bg-red-500/20 transition-colors uppercase tracking-wide flex items-center justify-center gap-2 mb-4"
+            >
+              <LogOut className="w-5 h-5" />
+              Log Out
+            </button>
             
             <div className="w-full">
               <AvatarShop 
@@ -214,6 +230,31 @@ export default function ProfileScreen({ onBack }: { onBack: () => void }) {
           </div>
         )}
       </div>
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-xl font-bold text-white mb-4 text-center">Log Out</h3>
+            <p className="text-slate-300 text-center mb-8 font-medium">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex gap-4">
+              <button 
+                onClick={() => { audio.playClick(); setShowLogoutConfirm(false); }}
+                className="flex-1 py-3 rounded-xl font-bold bg-slate-700 text-white hover:bg-slate-600 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmLogout}
+                className="flex-1 py-3 rounded-xl font-bold bg-red-500 text-white hover:bg-red-600 transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -28,25 +28,41 @@ export default function App() {
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userDocRef = doc(db, 'users', user.uid);
-        const snapshot = await getDoc(userDocRef);
-        
-        if (snapshot.exists()) {
-          useUserStore.getState().setStoreData({ ...snapshot.data(), uid: user.uid });
-          setCurrentScreen('menu');
-        } else {
+        try {
+          const userDocRef = doc(db, 'users', user.uid);
+          const snapshot = await getDoc(userDocRef);
+          
+          if (snapshot.exists()) {
+            useUserStore.getState().setStoreData({ ...snapshot.data(), uid: user.uid });
+            setCurrentScreen('menu');
+          } else {
+            useUserStore.getState().resetStore();
+            useUserStore.getState().setUid(user.uid);
+            
+            useUserStore.getState().updateProfile({
+              name: user.displayName || user.email?.split('@')[0] || 'Player',
+              age: null,
+              country: 'Other',
+              avatarType: 'gallery',
+              avatarImage: user.photoURL || undefined
+            });
+            
+            setCurrentScreen('menu');
+          }
+        } catch (err) {
+          console.error("Failed to load user profile:", err);
+          // If Firestore fails, we might want to sign out or just stay on login
           useUserStore.getState().resetStore();
-          useUserStore.getState().setUid(user.uid);
-          setCurrentScreen('startupProfile');
+          setCurrentScreen('login');
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       } else {
         useUserStore.getState().resetStore();
         setCurrentScreen('login');
         setLoading(false);
       }
     });
-
     return () => unsubscribeAuth();
   }, []);
 
@@ -67,7 +83,12 @@ export default function App() {
           stats: state.stats,
           settings: state.settings,
         };
-        setDoc(doc(db, 'users', state.uid), dataToSave, { merge: true });
+        // Firestore crashes if it encounters `undefined` values. 
+        // JSON stringify/parse safely strips all undefined properties from the nested objects.
+        const sanitizedData = JSON.parse(JSON.stringify(dataToSave));
+        setDoc(doc(db, 'users', state.uid), sanitizedData, { merge: true }).catch(err => {
+          console.error("Failed to save user data:", err);
+        });
       }
     });
     return unsub;
